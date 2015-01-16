@@ -106,7 +106,6 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
                    octoprint.plugin.StartupPlugin):
 
 	def __init__(self):
-		self._logger = logging.getLogger("octoprint.plugins.slic3r")
 		self._slic3r_logger = logging.getLogger("octoprint.plugins.slic3r.engine")
 
 		# setup job tracking across threads
@@ -135,10 +134,6 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 		return blueprint
 
 	##~~ AssetPlugin API
-
-	def get_asset_folder(self):
-		import os
-		return os.path.join(os.path.dirname(os.path.realpath(__file__)), "static")
 
 	def get_assets(self):
 		return {
@@ -170,17 +165,6 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 				else:
 					self._slic3r_logger.setLevel(logging.CRITICAL)
 			s.setBoolean(["debug_logging"], new_debug_logging)
-
-	##~~ TemplatePlugin API
-
-	def get_template_vars(self):
-		return dict(
-			_settings_menu_entry="Slic3r"
-		)
-
-	def get_template_folder(self):
-		import os
-		return os.path.join(os.path.dirname(os.path.realpath(__file__)), "templates")
 
 	##~~ SlicerPlugin API
 
