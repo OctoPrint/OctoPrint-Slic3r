@@ -201,7 +201,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 
 		self._save_profile(path, new_profile, allow_overwrite=allow_overwrite, display_name=profile.display_name, description=profile.description)
 
-	def do_slice(self, model_path, machinecode_path=None, profile_path=None, on_progress=None, on_progress_args=None, on_progress_kwargs=None):
+	def do_slice(self, model_path, printer_profile, machinecode_path=None, profile_path=None, position=None, on_progress=None, on_progress_args=None, on_progress_kwargs=None):
 		if not profile_path:
 			profile_path = s.get(["default_profile"])
 		if not machinecode_path:

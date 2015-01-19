@@ -298,22 +298,36 @@ class Profile(object):
 				result[k] = profile_value
 		return result
 
-	def __init__(self, profile):
-		self.profile = profile
+	def __init__(self, profile, printer_profile, posX, posY, overrides=None):
+		self._profile = profile
+		self._printer_profile = printer_profile
+		self._pos_x = posX
+		self._pos_y = posY
+		self._overrides = overrides
 
 	def get(self, key):
 		if key == "print_center":
-			bedDimensions = s.globalGet(["printerParameters", "bedDimensions"])
-			circular = bedDimensions["circular"] if "circular" in bedDimensions else False
+			width = self._printer_profile["volume"]["width"]
+			depth = self._printer_profile["volume"]["depth"]
+			circular = self._printer_profile["volume"]["formFactor"] == "circular"
 
-			if circular:
-				return 0, 0
+			if self._pos_x:
+				x = self._pos_x
 			else:
-				return bedDimensions["x"] / 2.0, bedDimensions["y"] / 2.0
+				x = width / 2.0 if not circular else 0.0
+			if self._pos_y:
+				y = self._pos_y
+			else:
+				y = depth / 2.0 if not circular else 0.0
+
+			return x, y
+
+		elif key == "nozzle_diameter":
+			return self._printer_profile["extruder"]["nozzleDiameter"]
 
 		else:
-			if key in self.profile:
-				return self.profile[key]
+			if key in self._profile:
+				return self._profile[key]
 			elif key in defaults:
 				return defaults[key]
 			else:
