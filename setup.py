@@ -20,7 +20,7 @@ def params():
 	description = "Adds support for slicing via Slic3r from within OctoPrint"
 	author = "Gina Häußge"
 	author_email = "osd@foosel.net"
-	url = "http://octoprint.org"
+	url = "http://github.com/OctoPrint/OctoPrint-Slic3r"
 	license = "AGPLv3"
 
 	packages = ["octoprint_slic3r"]
