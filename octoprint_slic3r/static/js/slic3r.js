@@ -100,7 +100,7 @@ $(function() {
                 self.profileDescription(undefined);
                 self.profileAllowOverwrite(true);
 
-                $("#settings-plugin-slic3r-import").modal("hide");
+                $("#settings_plugin_slic3r_import").modal("hide");
                 self.requestData();
                 self.slicingViewModel.requestData();
             }

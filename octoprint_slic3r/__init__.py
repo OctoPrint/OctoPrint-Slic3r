@@ -16,87 +16,9 @@ import octoprint.util
 import octoprint.slicing
 import octoprint.settings
 
-default_settings = {
-	"slic3r_engine": None,
-	"default_profile": None,
-	"debug_logging": False
-}
-s = octoprint.plugin.plugin_settings("slic3r", defaults=default_settings)
-
 from .profile import Profile
 
 blueprint = flask.Blueprint("plugin.slic3r", __name__)
-
-@blueprint.route("/import", methods=["POST"])
-def importSlic3rProfile():
-	import datetime
-	import tempfile
-
-	from octoprint.server import slicingManager
-
-	input_name = "file"
-	input_upload_name = input_name + "." + s.globalGet(["server", "uploads", "nameSuffix"])
-	input_upload_path = input_name + "." + s.globalGet(["server", "uploads", "pathSuffix"])
-
-	if input_upload_name in flask.request.values and input_upload_path in flask.request.values:
-		filename = flask.request.values[input_upload_name]
-		try:
-			profile_dict, imported_name, imported_description = Profile.from_slic3r_ini(flask.request.values[input_upload_path])
-		except Exception as e:
-			return flask.make_response("Something went wrong while converting imported profile: {message}".format(e.message), 500)
-
-	elif input_name in flask.request.files:
-		temp_file = tempfile.NamedTemporaryFile("wb", delete=False)
-		try:
-			temp_file.close()
-			upload = flask.request.files[input_name]
-			upload.save(temp_file.name)
-			profile_dict, imported_name, imported_description = Profile.from_slic3r_ini(temp_file.name)
-		except Exception as e:
-			return flask.make_response("Something went wrong while converting imported profile: {message}".format(e.message), 500)
-		finally:
-			os.remove(temp_file)
-
-		filename = upload.filename
-
-	else:
-		return flask.make_response("No file included", 400)
-
-	name, _ = os.path.splitext(filename)
-
-	# default values for name, display name and description
-	profile_name = _sanitize_name(name)
-	profile_display_name = imported_name if imported_name is not None else name
-	profile_description = imported_description if imported_description is not None else "Imported from {filename} on {date}".format(filename=filename, date=octoprint.util.getFormattedDateTime(datetime.datetime.now()))
-	profile_allow_overwrite = False
-
-	# overrides
-	if "name" in flask.request.values:
-		profile_name = flask.request.values["name"]
-	if "displayName" in flask.request.values:
-		profile_display_name = flask.request.values["displayName"]
-	if "description" in flask.request.values:
-		profile_description = flask.request.values["description"]
-	if "allowOverwrite" in flask.request.values:
-		from octoprint.server.api import valid_boolean_trues
-		profile_allow_overwrite = flask.request.values["allowOverwrite"] in valid_boolean_trues
-
-	slicingManager.save_profile("slic3r",
-	                            profile_name,
-	                            profile_dict,
-	                            allow_overwrite=profile_allow_overwrite,
-	                            display_name=profile_display_name,
-	                            description=profile_description)
-
-	result = dict(
-		resource=flask.url_for("api.slicingGetSlicerProfile", slicer="slic3r", name=profile_name, _external=True),
-		displayName=profile_display_name,
-		description=profile_description
-	)
-	r = flask.make_response(flask.jsonify(result), 201)
-	r.headers["Location"] = result["resource"]
-	return r
-
 
 class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
                    octoprint.plugin.SettingsPlugin,
@@ -119,19 +41,83 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 
 	def on_startup(self, host, port):
 		# setup our custom logger
-		slic3r_logging_handler = logging.handlers.RotatingFileHandler(s.getPluginLogfilePath(postfix="engine"), maxBytes=2*1024*1024)
+		slic3r_logging_handler = logging.handlers.RotatingFileHandler(self._settings.getPluginLogfilePath(postfix="engine"), maxBytes=2*1024*1024)
 		slic3r_logging_handler.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
 		slic3r_logging_handler.setLevel(logging.DEBUG)
 
 		self._slic3r_logger.addHandler(slic3r_logging_handler)
-		self._slic3r_logger.setLevel(logging.DEBUG if s.getBoolean(["debug_logging"]) else logging.CRITICAL)
+		self._slic3r_logger.setLevel(logging.DEBUG if self._settings.getBoolean(["debug_logging"]) else logging.CRITICAL)
 		self._slic3r_logger.propagate = False
 
 	##~~ BlueprintPlugin API
 
-	def get_blueprint(self):
-		global blueprint
-		return blueprint
+	@octoprint.plugin.BlueprintPlugin.route("/import", methods=["POST"])
+	def importSlic3rProfile(self):
+		import datetime
+		import tempfile
+
+		input_name = "file"
+		input_upload_name = input_name + "." + self._settings.globalGet(["server", "uploads", "nameSuffix"])
+		input_upload_path = input_name + "." + self._settings.globalGet(["server", "uploads", "pathSuffix"])
+
+		if input_upload_name in flask.request.values and input_upload_path in flask.request.values:
+			filename = flask.request.values[input_upload_name]
+			try:
+				profile_dict, imported_name, imported_description = Profile.from_slic3r_ini(flask.request.values[input_upload_path])
+			except Exception as e:
+				return flask.make_response("Something went wrong while converting imported profile: {message}".format(e.message), 500)
+
+		elif input_name in flask.request.files:
+			temp_file = tempfile.NamedTemporaryFile("wb", delete=False)
+			try:
+				temp_file.close()
+				upload = flask.request.files[input_name]
+				upload.save(temp_file.name)
+				profile_dict, imported_name, imported_description = Profile.from_slic3r_ini(temp_file.name)
+			except Exception as e:
+				return flask.make_response("Something went wrong while converting imported profile: {message}".format(e.message), 500)
+			finally:
+				os.remove(temp_file)
+
+			filename = upload.filename
+
+		else:
+			return flask.make_response("No file included", 400)
+
+		name, _ = os.path.splitext(filename)
+
+		# default values for name, display name and description
+		profile_name = _sanitize_name(name)
+		profile_display_name = imported_name if imported_name is not None else name
+		profile_description = imported_description if imported_description is not None else "Imported from {filename} on {date}".format(filename=filename, date=octoprint.util.getFormattedDateTime(datetime.datetime.now()))
+		profile_allow_overwrite = False
+
+		# overrides
+		if "name" in flask.request.values:
+			profile_name = flask.request.values["name"]
+		if "displayName" in flask.request.values:
+			profile_display_name = flask.request.values["displayName"]
+		if "description" in flask.request.values:
+			profile_description = flask.request.values["description"]
+		if "allowOverwrite" in flask.request.values:
+			from octoprint.server.api import valid_boolean_trues
+			profile_allow_overwrite = flask.request.values["allowOverwrite"] in valid_boolean_trues
+
+		self._slicing_manager.save_profile("slic3r",
+		                                   profile_name,
+		                                   profile_dict,
+		                                   allow_overwrite=profile_allow_overwrite,
+		                                   display_name=profile_display_name,
+		                                   description=profile_description)
+
+		result = dict(
+			resource=flask.url_for("api.slicingGetSlicerProfile", slicer="slic3r", name=profile_name, _external=True),
+			displayName=profile_display_name,
+			description=profile_description
+		)
+		r = flask.make_response(flask.jsonify(result), 201)
+		r.headers["Location"] = result["resource"]
+		return r
 
 	##~~ AssetPlugin API
 
@@ -144,32 +130,29 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 
 	##~~ SettingsPlugin API
 
-	def on_settings_load(self):
-		return dict(
-			slic3r_engine=s.get(["slic3r_engine"]),
-			default_profile=s.get(["default_profile"]),
-			debug_logging=s.getBoolean(["debug_logging"])
-		)
-
 	def on_settings_save(self, data):
-		if "slic3r_engine" in data and data["slic3r_engine"]:
-			s.set(["slic3r_engine"], data["slic3r_engine"])
-		if "default_profile" in data and data["default_profile"]:
-			s.set(["default_profile"], data["default_profile"])
-		if "debug_logging" in data:
-			old_debug_logging = s.getBoolean(["debug_logging"])
-			new_debug_logging = data["debug_logging"] in octoprint.settings.valid_boolean_trues
-			if old_debug_logging != new_debug_logging:
-				if new_debug_logging:
-					self._slic3r_logger.setLevel(logging.DEBUG)
-				else:
-					self._slic3r_logger.setLevel(logging.CRITICAL)
-			s.setBoolean(["debug_logging"], new_debug_logging)
+		old_debug_logging = self._settings.getBoolean(["debug_logging"])
+
+		super(Slic3rPlugin, self).on_settings_save(data)
+
+		new_debug_logging = self._settings.getBoolean(["debug_logging"])
+		if old_debug_logging != new_debug_logging:
+			if new_debug_logging:
+				self._slic3r_logger.setLevel(logging.DEBUG)
+			else:
+				self._slic3r_logger.setLevel(logging.CRITICAL)
+
+	def get_settings_defaults(self):
+		return dict(
+			slic3r_engine=None,
+			default_profile=None,
+			debug_logging=False
+		)
 
 	##~~ SlicerPlugin API
 
 	def is_slicer_configured(self):
-		slic3r = s.get(["slic3r_engine"])
+		slic3r = self._settings.get(["slic3r_engine"])
 		return slic3r is not None and os.path.exists(slic3r)
 
 	def get_slicer_properties(self):
@@ -181,7 +164,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 		)
 
 	def get_slicer_default_profile(self):
-		path = s.get(["default_profile"])
+		path = self._settings.get(["default_profile"])
 		if not path:
 			path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "profiles", "default.profile.ini")
 		return self.get_slicer_profile(path)
@@ -203,14 +186,14 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 
 	def do_slice(self, model_path, printer_profile, machinecode_path=None, profile_path=None, position=None, on_progress=None, on_progress_args=None, on_progress_kwargs=None):
 		if not profile_path:
-			profile_path = s.get(["default_profile"])
+			profile_path = self._settings.get(["default_profile"])
 		if not machinecode_path:
 			path, _ = os.path.splitext(model_path)
 			machinecode_path = path + ".gco"
 
 		self._slic3r_logger.info("### Slicing %s to %s using profile stored at %s" % (model_path, machinecode_path, profile_path))
 
-		executable = s.get(["slic3r_engine"])
+		executable = self._settings.get(["slic3r_engine"])
 		if not executable:
 			return False, "Path to Slic3r is not configured "
 
