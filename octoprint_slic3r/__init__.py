@@ -89,7 +89,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 		# default values for name, display name and description
 		profile_name = _sanitize_name(name)
 		profile_display_name = imported_name if imported_name is not None else name
-		profile_description = imported_description if imported_description is not None else "Imported from {filename} on {date}".format(filename=filename, date=octoprint.util.getFormattedDateTime(datetime.datetime.now()))
+		profile_description = imported_description if imported_description is not None else "Imported from {filename} on {date}".format(filename=filename, date=octoprint.util.get_formatted_datetime(datetime.datetime.now()))
 		profile_allow_overwrite = False
 
 		# overrides
