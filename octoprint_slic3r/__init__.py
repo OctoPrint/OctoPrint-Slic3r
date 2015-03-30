@@ -41,12 +41,12 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 
 	def on_startup(self, host, port):
 		# setup our custom logger
-		slic3r_logging_handler = logging.handlers.RotatingFileHandler(self._settings.getPluginLogfilePath(postfix="engine"), maxBytes=2*1024*1024)
+		slic3r_logging_handler = logging.handlers.RotatingFileHandler(self._settings.get_plugin_logfile_path(postfix="engine"), maxBytes=2*1024*1024)
 		slic3r_logging_handler.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
 		slic3r_logging_handler.setLevel(logging.DEBUG)
 
 		self._slic3r_logger.addHandler(slic3r_logging_handler)
-		self._slic3r_logger.setLevel(logging.DEBUG if self._settings.getBoolean(["debug_logging"]) else logging.CRITICAL)
+		self._slic3r_logger.setLevel(logging.DEBUG if self._settings.get_boolean(["debug_logging"]) else logging.CRITICAL)
 		self._slic3r_logger.propagate = False
 
 	##~~ BlueprintPlugin API
@@ -57,8 +57,8 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 		import tempfile
 
 		input_name = "file"
-		input_upload_name = input_name + "." + self._settings.globalGet(["server", "uploads", "nameSuffix"])
-		input_upload_path = input_name + "." + self._settings.globalGet(["server", "uploads", "pathSuffix"])
+		input_upload_name = input_name + "." + self._settings.global_get(["server", "uploads", "nameSuffix"])
+		input_upload_path = input_name + "." + self._settings.global_get(["server", "uploads", "pathSuffix"])
 
 		if input_upload_name in flask.request.values and input_upload_path in flask.request.values:
 			filename = flask.request.values[input_upload_name]
@@ -131,11 +131,11 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 	##~~ SettingsPlugin API
 
 	def on_settings_save(self, data):
-		old_debug_logging = self._settings.getBoolean(["debug_logging"])
+		old_debug_logging = self._settings.get_boolean(["debug_logging"])
 
 		super(Slic3rPlugin, self).on_settings_save(data)
 
-		new_debug_logging = self._settings.getBoolean(["debug_logging"])
+		new_debug_logging = self._settings.get_boolean(["debug_logging"])
 		if old_debug_logging != new_debug_logging:
 			if new_debug_logging:
 				self._slic3r_logger.setLevel(logging.DEBUG)
@@ -294,4 +294,4 @@ def _sanitize_name(name):
 
 __plugin_name__ = "Slic3r"
 __plugin_version__ = "0.1"
-__plugin_implementations__ = [Slic3rPlugin()]
+__plugin_implementation__ = Slic3rPlugin()
