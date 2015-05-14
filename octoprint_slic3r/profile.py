@@ -245,13 +245,7 @@ class Profile(object):
 					return str(value)
 				else:
 					return float(value)
-			elif isinstance(default, bool):
-				return bool(value)
-			elif isinstance(default, int):
-				return int(value)
-			elif isinstance(default, float):
-				return float(value)
-			elif isinstance(default, (list, tuple)):
+			elif isinstance(default, (list, tuple)) or ( isinstance(default, float) and sep in value ):
 				result = []
 
 				parts = value.split(sep)
@@ -265,6 +259,12 @@ class Profile(object):
 						result.append(cls.convert_value(key, parts[i], d))
 
 				return result
+			elif isinstance(default, bool):
+				return bool(value)
+			elif isinstance(default, int):
+				return int(value)
+			elif isinstance(default, float):
+				return float(value)
 			else:
 				return str(value)
 		except:
