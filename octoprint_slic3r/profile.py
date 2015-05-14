@@ -146,7 +146,6 @@ defaults = dict(
     duplicate=1,
     duplicate_grid=(1,1), # TODO ?!
     duplicate_distance=6,
-    xy_size_compensation=0,
 
     complete_objects=False,
     extruder_clearance_radius=20,
@@ -158,7 +157,6 @@ defaults = dict(
     extrusion_width="100%",
     first_layer_extrusion_width="100%",
     perimeter_extrusion_width="100%",
-    external_perimeter_extrusion_width="100%",
     infill_extrusion_width="100%",
     solid_infill_extrusion_width="100%",
     top_infill_extrusion_width="100%",
@@ -223,8 +221,10 @@ class Profile(object):
 		with open(path, "w") as f:
 			if display_name is not None:
 				f.write("# Name: " + display_name + "\n")
+				logging.getLogger("octoprint.plugins.slic3r.engine").debug("[PROFILE] # Name: " + display_name.rstrip() )
 			if description is not None:
 				f.write("# Description: " + description + "\n")
+                                logging.getLogger("octoprint.plugins.slic3r.engine").debug("[PROFILE] # Description: " + description.rstrip() )
 			for key in sorted(profile.keys()):
 				if key.startswith("_"):
 					continue
@@ -235,6 +235,7 @@ class Profile(object):
 				elif isinstance(value, (tuple, list)):
 					value = ",".join(map(str, value))
 				f.write(key + " = " + str(value) + "\n")
+                                logging.getLogger("octoprint.plugins.slic3r.engine").debug("[PROFILE] " + key + " = " + str(value) )
 
 	@classmethod
 	def convert_value(cls, key, value, default, sep=","):
@@ -244,13 +245,7 @@ class Profile(object):
 					return str(value)
 				else:
 					return float(value)
-			elif isinstance(default, bool):
-				return bool(value)
-			elif isinstance(default, int):
-				return int(value)
-			elif isinstance(default, float):
-				return float(value)
-			elif isinstance(default, (list, tuple)):
+			elif isinstance(default, (list, tuple)) or ( isinstance(default, float) and sep in value ):
 				result = []
 
 				parts = value.split(sep)
@@ -264,6 +259,12 @@ class Profile(object):
 						result.append(cls.convert_value(key, parts[i], d))
 
 				return result
+			elif isinstance(default, bool):
+				return bool(value)
+			elif isinstance(default, int):
+				return int(value)
+			elif isinstance(default, float):
+				return float(value)
 			else:
 				return str(value)
 		except:
