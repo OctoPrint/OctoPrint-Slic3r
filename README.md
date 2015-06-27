@@ -1,3 +1,5 @@
+**STILL IN DEVELOPMENT, NOT FIT FOR GENERAL CONSUMPTION, DO NOT USE IF NOT A DEVELOPER!**
+
 # Slic3r plugin for OctoPrint
 
 **WARNING** Not functional yet since slic3r's return codes are behaving unexpectedly. WIP for others to take a look at
