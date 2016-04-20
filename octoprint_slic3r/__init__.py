@@ -201,7 +201,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 
 		working_dir, _ = os.path.split(executable)
                 # Compute the center.  We would put it in the ini file but it is ignored there.
-                profile_dict, _, _ = self.get_slicer_profile(profile_path)
+                profile_dict, _, _ = Profile.from_slic3r_ini(profile_path)
                 bed_shape_text = profile_dict.get("bed_shape")
                 corners = [[float(coord) for coord in corner.split('x')] for corner in bed_shape_text.split(',')]
                 center = [sum(i)/len(i) for i in zip(*corners)]
