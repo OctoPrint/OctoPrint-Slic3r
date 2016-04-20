@@ -1,15 +1,12 @@
-**STILL IN DEVELOPMENT, NOT FIT FOR GENERAL CONSUMPTION, DO NOT USE IF NOT A DEVELOPER!**
-
 # Slic3r plugin for OctoPrint
 
-**WARNING** Not functional yet since slic3r's return codes are behaving unexpectedly. WIP for others to take a look at
-and maybe build upon.
+This is forked from the official version.  This fork doesn't assume a specific version of OctoPrint so it should be able to work with all versions of octoprint files.
 
 ## Setup
 
 Install the plugin like you would install any regular Python package from source:
 
-    pip install https://github.com/OctoPrint/OctoPrint-Slic3r/archive/master.zip
+    pip install https://github.com/eyal0/OctoPrint-Slic3r/archive/master.zip
     
 Make sure you use the same Python environment that you installed OctoPrint under, otherwise the plugin
 won't be able to satisfy its dependencies.
@@ -18,7 +15,3 @@ Restart OctoPrint. `octoprint.log` should show you that the plugin was successfu
 
     2014-10-29 12:29:21,500 - octoprint.plugin.core - INFO - Loading plugins from ... and installed plugin packages...
     2014-10-29 12:29:21,611 - octoprint.plugin.core - INFO - Found 2 plugin(s): Slic3r (0.1.0), Discovery (0.1)
-
-## Configuration
-
-TODO
