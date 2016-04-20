@@ -125,30 +125,10 @@ class Profile(object):
 		self._overrides = overrides
 
 	def get(self, key):
-		if key == "print_center":
-			width = self._printer_profile["volume"]["width"]
-			depth = self._printer_profile["volume"]["depth"]
-			circular = self._printer_profile["volume"]["formFactor"] == "circular"
-
-			if self._pos_x:
-				x = self._pos_x
-			else:
-				x = width / 2.0 if not circular else 0.0
-			if self._pos_y:
-				y = self._pos_y
-			else:
-				y = depth / 2.0 if not circular else 0.0
-
-			return x, y
-
-		elif key == "nozzle_diameter":
-			return self._printer_profile["extruder"]["nozzleDiameter"]
-
-		else:
-			if key in self._profile:
-				return self._profile[key]
-			else:
-				return None
+          if key in self._profile:
+            return self._profile[key]
+          else:
+            return None
 
 	def convert_to_engine(self):
 		settings = dict()

@@ -200,7 +200,17 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 		import sarge
 
 		working_dir, _ = os.path.split(executable)
-		args = ['"%s"' % executable, '--load', '"%s"' % profile_path, '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
+                # Compute the center.  We would put it in the ini file but it is ignored there.
+                profile_dict, _, _ = self.get_slicer_profile(profile_path)
+                bed_shape_text = profile_dict.get("bed_shape")
+                corners = [[float(coord) for coord in corner.split('x')] for corner in bed_shape_text.split(',')]
+                center = [sum(i)/len(i) for i in zip(*corners)]
+                center_text = ','.join(center)
+
+		args = ['"%s"' % executable, '--load', '"%s"' % profile_path,
+                        '--print-center', '"%s"' % center_text,
+                        '-o', '"%s"' % machinecode_path,
+                        '"%s"' % model_path]
 
 		command = " ".join(args)
 		self._logger.info("Running %r in %s" % (command, working_dir))
