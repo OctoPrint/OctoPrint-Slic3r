@@ -205,7 +205,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
                 bed_shape_text = profile_dict.get("bed_shape")
                 corners = [[float(coord) for coord in corner.split('x')] for corner in bed_shape_text.split(',')]
                 center = [sum(i)/len(i) for i in zip(*corners)]
-                center_text = ','.join(center)
+                center_text = ','.join(str(coord) for coord in center)
 
 		args = ['"%s"' % executable, '--load', '"%s"' % profile_path,
                         '--print-center', '"%s"' % center_text,
