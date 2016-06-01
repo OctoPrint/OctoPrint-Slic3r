@@ -1,6 +1,10 @@
 # Slic3r plugin for OctoPrint
 
-This plugin has been successfully tested for Slicer's stable versions 1.1.7 and 1.2.9 under a Raspberry Pi, so be careful when using it under another OS.
+**WARNING**
+
+This plugin has been successfully tested for the following cases:</br>
+1. Linux: Slic3r's stable versions 1.1.7 and 1.2.9 (tests done under a Raspberry Pi 2, but it should work for other Linux distributions).</br>
+2. Windows: Slic3r works for version 1.2.9, not doing it for version 1.1.7.
 
 ## Setup
 
@@ -55,7 +59,7 @@ At this moment, the plugin will be installed, but Slic3r must be downloaded and 
 
   ![Screenshot](http://i.imgur.com/44yDsJ6.png)
 
-6. In 'General', you should put the following path for the executable: /home/pi/Slic3r/slic3r.pl:
+6. In 'General', you should put the following path for the executable (supposing the execution of the script, the path would be /home/pi/Slic3r/slic3r.pl). <b>Note: If running in Windows, write the path to slic3r-console</b>:
 
   ![Screenshot](http://i.imgur.com/1ckQCgL.png)
 
