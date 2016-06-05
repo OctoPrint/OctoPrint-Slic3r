@@ -200,7 +200,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 		import sarge
 
 		working_dir, _ = os.path.split(executable)
-		args = ['"%s"' % executable, '--load', '"%s"' % profile_path, '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
+		args = ["perl "'"%s"' % executable, '--load', '"%s"' % profile_path, '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
 
 		command = " ".join(args)
 		self._logger.info("Running %r in %s" % (command, working_dir))
