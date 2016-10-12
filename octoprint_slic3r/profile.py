@@ -42,10 +42,10 @@ defaults = dict(
     print_center = (100, 100), # TODO
     z_offset = 0,
     gcode_flavor = GcodeFlavors.REPRAP,
-    use_relative_e_distances = 0, 			# 0 (unchecked) or 1 (checked)
-    use_firmware_retraction = 0, 			# 0 (unchecked) or 1 (checked)
-    gcode_arcs = 0, 					# 0 (unchecked) or 1 (checked)
-    gcode_comments = 0, 				# 0 (unchecked) or 1 (checked)
+    use_relative_e_distances = 0, 				# 0 (unchecked) or 1 (checked)
+    use_firmware_retraction = 0, 				# 0 (unchecked) or 1 (checked)
+    gcode_arcs = 0, 							# 0 (unchecked) or 1 (checked)
+    gcode_comments = 0, 						# 0 (unchecked) or 1 (checked)
     vibration_limit = 0,
 
     filament_diameter = 3,
@@ -89,19 +89,19 @@ defaults = dict(
     layer_gcode = None,
     toolchange_gcode = None,
     seam_position = SeamPositions.ALIGNED,
-    external_perimeters_first = 0, 			# 0 (unchecked) or 1 (checked)
-    spiral_vase = 0, 					# 0 (unchecked) or 1 (checked)
-    only_retract_when_crossing_perimeters = 0,		# 0 (unchecked) or 1 (checked)
+    external_perimeters_first = 0,				# 0 (unchecked) or 1 (checked)
+    spiral_vase = 0,							# 0 (unchecked) or 1 (checked)
+    only_retract_when_crossing_perimeters = 0,	# 0 (unchecked) or 1 (checked)
     solid_infill_below_area = 70,
-    infill_only_where_needed = 0, 			# 0 (unchecked) or 1 (checked)
-    infill_first = 0, 					# 0 (unchecked) or 1 (checked)
+    infill_only_where_needed = 0,				# 0 (unchecked) or 1 (checked)
+    infill_first = 0,							# 0 (unchecked) or 1 (checked)
 
-    extra_perimeters = 1, 				# 0 (unchecked) or 1 (checked)
-    avoid_crossing_perimeters = 0, 			# 0 (unchecked) or 1 (checked)
-    thin_walls = 1, 					# 0 (unchecked) or 1 (checked)
+    extra_perimeters = 1,						# 0 (unchecked) or 1 (checked)
+    avoid_crossing_perimeters = 0,				# 0 (unchecked) or 1 (checked)
+    thin_walls = 1, 							# 0 (unchecked) or 1 (checked)
     overhangs = 0,
 
-    support_material = 0, 				# 0 (unchecked) or 1 (checked)
+    support_material = 0, 						# 0 (unchecked) or 1 (checked)
     support_material_threshold = 0,
     support_material_pattern = SupportPatterns.HONEYCOMB,
     support_material_spacing = 2.5,
@@ -110,7 +110,7 @@ defaults = dict(
     support_material_interface_spacing = 0,
     raft_layers = 0,
     support_material_enforce_layers = 0,
-    dont_support_bridges = 0, 				# 0 (unchecked) or 1 (checked)
+    dont_support_bridges = 0, 					# 0 (unchecked) or 1 (checked)
 
     retract_length = 1,
     retract_speed = 30,
@@ -123,7 +123,7 @@ defaults = dict(
     retract_length_toolchange = 1,
     retract_restart_extra_toolchange = 1,
 
-    cooling = 0, 					# 0 (unchecked) or 1 (checked)
+    cooling = 0, 								# 0 (unchecked) or 1 (checked)
     min_fan_speed = "35",
     max_fan_speed = "100",
     bridge_fan_speed = "100",
@@ -131,7 +131,7 @@ defaults = dict(
     slowdown_below_layer_time = 30,
     min_print_speed = 10,
     disable_fan_first_layers = 1,
-    fan_always_on = 0,					# 0 (unchecked) or 1 (checked)
+    fan_always_on = 0,							# 0 (unchecked) or 1 (checked)
 
     skirts = 1,
     skirt_distance = 6,
@@ -164,7 +164,7 @@ defaults = dict(
     infill_extruder = 1,
     support_material_extruder = 1,
     support_material_interface_extruder = 1,
-    ooze_prevention = 0, 				# 0 (unchecked) or 1 (checked)
+    ooze_prevention = 0, 						# 0 (unchecked) or 1 (checked)
     standby_temperature_delta = -5,
 
     #Parameters that weren't in the list that have been added
@@ -180,16 +180,15 @@ defaults = dict(
     pressure_advance = 0,
     solid_infill_extruder = 1,
     support_material_contact_distance = 0.2,
-    use_volumetric_e = 0,  				# 0 (unchecked) or 1 (checked)
+    use_volumetric_e = 0,						# 0 (unchecked) or 1 (checked)
     threads = 2,
     first_layer_bed_temperature = 90,
-    interface_shells = 0, 				# 0 (unchecked) or 1 (checked)
-    post_processing = None,
+    interface_shells = 0,						# 0 (unchecked) or 1 (checked)
     solid_fill_pattern = FillPatterns.RECTILINEAR,
-    g0 = 0,						# 0 (unchecked) or 1 (checked)
+    g0 = 0,										# 0 (unchecked) or 1 (checked)
     duplicate = 1,
     duplicate_grid = (1,1),
-    randomize_start = 0,				# 0 (unchecked) or 1 (checked)
+    randomize_start = 0,						# 0 (unchecked) or 1 (checked)
     rotate = 0,
     scale = 1,
     start_perimeters_at_concave_points = 0,		# 0 (unchecked) or 1 (checked)
@@ -261,15 +260,15 @@ class Profile(object):
 	@classmethod
 	def convert_value(cls, key, value, default, sep=","):
 		try:
-			'''Some defaults can be instances of int whereas its values are instances of float. 
-			If that happens, change default to float so as to override default value without getting errors'''
-			if isinstance(default,int) and value.count('.')==1:
-				default=float(default)
+			# Some defaults can be instances of int whereas its values are instances of float.
+			# If that happens, change default to float so as to override default value without getting errors
+			if isinstance(default,int) and value.count('.') == 1:
+				default = float(default)
 
 			if key in float_or_int_or_percentage:
 				if value.endswith("%"):
 					return str(value)
-				elif value.count('.')==1:
+				elif value.count('.') == 1:
 					return float(value)
 				else:
 					return int(value)
