@@ -285,10 +285,6 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 			raise IOError("Cannot overwrite {path}".format(path=path))
 		Profile.to_slic3r_ini(profile, path, display_name=display_name, description=description)
 
-	def _convert_to_engine(self, profile_path):
-		profile = Profile(self._load_profile(profile_path))
-		return profile.convert_to_engine()
-
 def _sanitize_name(name):
 	if name is None:
 		return None
