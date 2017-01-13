@@ -94,7 +94,6 @@ class Profile(object):
 		self._overrides = overrides
 
 	def get(self, key):
-		print "foo"
 		if key == "print_center":
 			width = self._printer_profile["volume"]["width"]
 			depth = self._printer_profile["volume"]["depth"]
