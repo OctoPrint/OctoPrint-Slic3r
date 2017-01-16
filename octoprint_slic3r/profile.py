@@ -52,7 +52,6 @@ class Profile(object):
 		description = None
 		with open(path) as f:
 			for line in f:
-				print line
 				if "#" in line:
 					if line.startswith("# Name: "):
 						display_name = line[len("# Name: "):]
@@ -62,9 +61,7 @@ class Profile(object):
 				if len(split_line) != 2:
 					continue
 				key, v = map(str.strip, split_line)
-                                print "checking " + v
                                 if "#" in v and str.strip(v[0:v.find("#")]):
-                                  print "aha!"
                                   v = str.strip(v[0:v.find("#")])
 
 				result[key] = v
