@@ -15,7 +15,7 @@ def package_data_dirs(source, sub_folders):
 
 def params():
 	name = "OctoPrint-Slic3r"
-	version = "0.2"
+	version = "0.2.1"
 
 	description = "Adds support for slicing via Slic3r from within OctoPrint"
 	author = "Eyal Soha"
