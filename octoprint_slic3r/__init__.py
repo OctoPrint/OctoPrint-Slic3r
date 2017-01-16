@@ -37,6 +37,28 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 		self._cancelled_jobs = []
 		self._cancelled_jobs_mutex = threading.Lock()
 
+        ##~~ Softwareupdate hook
+
+        def get_update_information(self):
+          # Define the configuration for your plugin to use with the Software Update
+          # Plugin here. See https://github.com/foosel/OctoPrint/wiki/Plugin:-Software-Update
+          # for details.
+          return dict(
+              Slic3r=dict(
+                  displayName="OctoPrint-Slic3r Plugin",
+                  displayVersion=self._plugin_version,
+
+                  # version check: github repository
+                  type="github_release",
+                  user="eyal0",
+                  repo="OctoPrint-Slic3r",
+                  current=self._plugin_version,
+
+                  # update method: pip
+                  pip="https://github.com/eyal0/OctoPrint-Slic3r/archive/{target_version}.zip"
+              )
+          )
+
 	##~~ StartupPlugin API
 
 	def on_startup(self, host, port):
@@ -285,10 +307,6 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 			raise IOError("Cannot overwrite {path}".format(path=path))
 		Profile.to_slic3r_ini(profile, path, display_name=display_name, description=description)
 
-	def _convert_to_engine(self, profile_path):
-		profile = Profile(self._load_profile(profile_path))
-		return profile.convert_to_engine()
-
 def _sanitize_name(name):
 	if name is None:
 		return None
@@ -305,3 +323,6 @@ def _sanitize_name(name):
 __plugin_name__ = "Slic3r"
 __plugin_version__ = "0.1"
 __plugin_implementation__ = Slic3rPlugin()
+__plugin_hooks__ = {
+    "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information
+}
