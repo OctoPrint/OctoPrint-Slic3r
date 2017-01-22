@@ -55,34 +55,36 @@ At this moment, the plugin will be installed, but Slic3r must be downloaded and 
 
   ![Screenshot](http://imgur.com/Qa2Dgv7.png)
 
-5. Execute OctoPrint and go to Settings (or restart when you are asked after installing the plugin). Slic3r should appear in Plugins list:
+5. If you get an out of memory error it's because Raspberry Pi doesn't have enough swap memory to build Slic3r by default. You will need to increase the swap size. To do this, run `sudo nano /etc/dphys-swapfile` and set `CONF_SWAPSIZE=1000` then save and reboot. After reboot, run `free -h` and confirm that total swap size is around 1000MB.
+
+6. Execute OctoPrint and go to Settings (or restart when you are asked after installing the plugin). Slic3r should appear in Plugins list:
 
   ![Screenshot](http://i.imgur.com/44yDsJ6.png)
 
-6. In 'General', you should put the following path for the executable (supposing the execution of the script, the path would be /home/pi/Slic3r/slic3r.pl). <b>Note: If running in Windows, write the path to slic3r-console</b>:
+7. In 'General', you should put the following path for the executable (supposing the execution of the script, the path would be /home/pi/Slic3r/slic3r.pl). <b>Note: If running in Windows, write the path to slic3r-console</b>:
 
   ![Screenshot](http://i.imgur.com/1ckQCgL.png)
 
-7. Before importing the profile, you have to export a file with the Slic3r's configuration. For that purpose, open Slic3r, and select File-> Export Config...
+8. Before importing the profile, you have to export a file with the Slic3r's configuration. For that purpose, open Slic3r, and select File-> Export Config...
 
   ![Screenshot](http://i.imgur.com/41XFyEI.png)
 
-8. Save the file with the desired name (e.g. config.ini):
+9. Save the file with the desired name (e.g. config.ini):
 
   ![Screenshot](http://imgur.com/YzfqRXM.png)
 
-9. Once done, in 'Profiles' click 'Import Profile...' button:
+10. Once done, in 'Profiles' click 'Import Profile...' button:
 
   ![Screenshot](http://imgur.com/HkbO1G8.png)
 
-10. Click on 'Browse...' and search for the profile. Once done, save with the name and identifier wished by clicking 'Confirm':
+11. Click on 'Browse...' and search for the profile. Once done, save with the name and identifier wished by clicking 'Confirm':
 
   ![Screenshot](http://i.imgur.com/7NJmJK3.png)
 
-11. Click 'Save' to confirm Slic3r settings:
+12. Click 'Save' to confirm Slic3r settings:
 
   ![Screenshot](http://imgur.com/HkbO1G8.png)
 
-12. Now you can slice your stl files:
+13. Now you can slice your stl files:
 
   ![Screenshot](http://i.imgur.com/AC1g0un.png)
