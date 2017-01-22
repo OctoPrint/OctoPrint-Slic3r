@@ -41,7 +41,7 @@ At this moment, the plugin will be installed, but Slic3r must be downloaded and 
   echo "If everything was installed properly,you should be able to run Slic3r with the command ./slic3r.pl"   
 ```
 
-2. Save the file and allow execution giving permission. Using a terminal, it would be chmod +x slic3r_install.sh (or the name given t the file).
+2. Save the file and allow execution giving permission. Using a terminal, it would be chmod +x slic3r_install.sh (or the name given to the file).
 ```
   chmod +x slic3r_install.sh
 ```
