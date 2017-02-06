@@ -50,7 +50,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 
                   # version check: github repository
                   type="github_release",
-                  user="eyal0",
+                  user="Javierma",
                   repo="OctoPrint-Slic3r",
                   current=self._plugin_version,
 
@@ -321,7 +321,7 @@ def _sanitize_name(name):
 	return sanitized_name.lower()
 
 __plugin_name__ = "Slic3r"
-__plugin_version__ = "0.2.1"
+__plugin_version__ = "0.1"
 __plugin_implementation__ = Slic3rPlugin()
 __plugin_hooks__ = {
     "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information

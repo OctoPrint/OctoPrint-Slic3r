@@ -15,12 +15,12 @@ def package_data_dirs(source, sub_folders):
 
 def params():
 	name = "OctoPrint-Slic3r"
-	version = "0.2.1"
+	version = "0.1"
 
 	description = "Adds support for slicing via Slic3r from within OctoPrint"
-	author = "Eyal Soha"
-	author_email = "eyal0@github.com"
-	url = "http://github.com/eyal0/OctoPrint-Slic3r"
+	author = "Gina Häußge"
+	author_email = "osd@foosel.net"
+	url = "http://github.com/OctoPrint/OctoPrint-Slic3r"
 	license = "AGPLv3"
 
 	packages = ["octoprint_slic3r"]
