@@ -61,12 +61,14 @@ class Profile(object):
 				if len(split_line) != 2:
 					continue
 				key, v = map(str.strip, split_line)
+                                # Only strip the comment if it's really a comment.
+                                # Sometimes the parameter's value includes a #,
+                                # for example, color.
                                 if "#" in v and str.strip(v[0:v.find("#")]):
                                   v = str.strip(v[0:v.find("#")])
 
 				result[key] = v
 
-		# merge it with our default settings, the imported profile settings taking precedence
 		return result, display_name, description
 
 	@classmethod
