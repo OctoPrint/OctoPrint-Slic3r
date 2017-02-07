@@ -1,10 +1,6 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-__author__ = "Gina Häußge <osd@foosel.net>"
-__license__ = "GNU Affero General Public License http://www.gnu.org/licenses/agpl.html"
-__copyright__ = "Copyright (C) 2014 The OctoPrint Project - Released under terms of the AGPLv3 License"
-
 import logging
 import logging.handlers
 import os
@@ -50,12 +46,12 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 
                   # version check: github repository
                   type="github_release",
-                  user="Javierma",
+                  user="OctoPrint",
                   repo="OctoPrint-Slic3r",
                   current=self._plugin_version,
 
                   # update method: pip
-                  pip="https://github.com/eyal0/OctoPrint-Slic3r/archive/{target_version}.zip"
+                  pip="https://github.com/OctoPrint/OctoPrint-Slic3r/archive/{target_version}.zip"
               )
           )
 
@@ -141,7 +137,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 		r.headers["Location"] = result["resource"]
 		return r
 
-	##~~ AssetPlugin API
+	##~~ AssetPlugin mixin
 
 	def get_assets(self):
 		return {
@@ -150,7 +146,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 			"css": ["css/slic3r.css"]
 		}
 
-	##~~ SettingsPlugin API
+	##~~ SettingsPlugin mixin
 
 	def on_settings_save(self, data):
 		old_debug_logging = self._settings.get_boolean(["debug_logging"])
@@ -321,8 +317,12 @@ def _sanitize_name(name):
 	return sanitized_name.lower()
 
 __plugin_name__ = "Slic3r"
-__plugin_version__ = "0.1"
-__plugin_implementation__ = Slic3rPlugin()
-__plugin_hooks__ = {
-    "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information
-}
+
+def __plugin_load__():
+  	global __plugin_implementation__
+	__plugin_implementation__ = Slic3rPlugin()
+
+	global __plugin_hooks__
+	__plugin_hooks__ = {
+		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information
+	}
