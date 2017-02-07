@@ -12,7 +12,7 @@ In order to install the plugin, go to Settings -> Plugin Manager and click on 'G
 
 ![Screenshot](http://imgur.com/9NaAl37.png)
 
-You'll see an option to add it from an URL. Add https://github.com/javierma/OctoPrint-Slic3r/archive/master.zip an click on 'Install' button.
+You'll see an option to add it from an URL. Add https://github.com/OctoPrint/OctoPrint-Slic3r/archive/master.zip an click on 'Install' button.
 
 ![Screenshot](http://i.imgur.com/lln2TvT.png)
 
