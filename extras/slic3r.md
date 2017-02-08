@@ -20,8 +20,6 @@ tags:
 - gcode
 - stl
 
-screenshots:
-
 featuredimage: http://slic3r.org/images/logo.png
 
 compatibility:
