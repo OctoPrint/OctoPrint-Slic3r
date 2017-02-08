@@ -18,10 +18,10 @@ plugin_version = "1.0.0"
 plugin_description = """Adds support for slicing via Slic3r from within OctoPrint"""
 
 # The plugin's author. Can be overwritten within OctoPrint's internal data via __plugin_author__ in the plugin module
-plugin_author = "Gina Häußge"
+plugin_author = "Javier Martínez Arrieta <martinezarrietajavier@gmail.com>, Eyal Soha <eyalsoha@gmail.com>"
 
 # The plugin's author's mail address.
-plugin_author_email = "osd@foosel.net"
+plugin_author_email = "eyalsoha@gmail.com"
 
 # The plugin's homepage URL. Can be overwritten within OctoPrint's internal data via __plugin_url__ in the plugin module
 plugin_url = "http://github.com/OctoPrint/OctoPrint-Slic3r"

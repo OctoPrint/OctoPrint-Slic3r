@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-__author__ = "Gina Häußge <osd@foosel.net>, Javier Martínez Arrieta <martinezarrietajavier@gmail.com>"
+__author__ = "Javier Martínez Arrieta <martinezarrietajavier@gmail.com>, Eyal Soha <eyalsoha@gmail.com>"
 __license__ = 'GNU Affero General Public License http://www.gnu.org/licenses/agpl.html'
 __copyright__ = "Copyright (C) 2014 The OctoPrint Project - Released under terms of the AGPLv3 License"
 
