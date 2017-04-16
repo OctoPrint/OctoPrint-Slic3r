@@ -5,7 +5,7 @@
 This plugin has been successfully tested for the following cases:
 
 1. Linux: Slic3r's stable versions 1.1.7 and 1.2.9 (tests done under a Raspberry Pi 2, but it should work for other Linux distributions).
-2. Linux: Also tested with [Slic3r Prusa Edition](https://github.com/prusa3d/Slic3r) version 1.33.2 (latest at time of this writing).
+2. Linux: Also tested with [Slic3r Prusa Edition](https://github.com/prusa3d/Slic3r) version 1.33.8.  Versions >= 1.34 don't yet work.
 3. Windows: Slic3r works for version 1.2.9, not doing it for version 1.1.7.
 
 ## Setup
@@ -32,7 +32,7 @@ At this moment, the plugin will be installed, but Slic3r must be downloaded and 
         echo "The installation of Slic3r takes a long time. PLease be patient"
         cd $HOME
         echo "Installing required libraries and dependencies..."
-        sudo apt-get install git libboost-system-dev libboost-thread-dev git-core build-essential libgtk2.0-dev libwxgtk2.8-dev libwx-perl libmodule-build-perl libnet-dbus-perl cpanminus libextutils-cbuilder-perl gcc-4.7 g++-4.7 libwx-perl libperl-dev
+        sudo apt-get install git libboost-all-dev libboost-geometry-utils-perl libboost-system-dev libboost-thread-dev git-core build-essential libgtk2.0-dev libwxgtk2.8-dev libwx-perl libmodule-build-perl libnet-dbus-perl cpanminus libextutils-cbuilder-perl gcc-4.7 g++-4.7 libwx-perl libperl-dev
         sudo cpanm AAR/Boost-Geometry-Utils-0.06.tar.gz Math::Clipper Math::ConvexHull Math::ConvexHull::MonotoneChain Math::Geometry::Voronoi Math::PlanePath Moo IO::Scalar Class::XSAccessor Growl::GNTP XML::SAX::ExpatXS PAR::Packer
         echo "Cloning Slic3r repository..."
         git clone https://github.com/alexrj/Slic3r.git
