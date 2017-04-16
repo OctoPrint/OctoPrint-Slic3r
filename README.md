@@ -5,7 +5,7 @@
 This plugin has been successfully tested for the following cases:
 
 1. Linux: Slic3r's stable versions 1.1.7 and 1.2.9 (tests done under a Raspberry Pi 2, but it should work for other Linux distributions).
-2. Linux: Also tested with [Slic3r Prusa Edition](https://github.com/prusa3d/Slic3r) version 1.33.2 (latest at time of this writing).
+2. Linux: Also tested with [Slic3r Prusa Edition](https://github.com/prusa3d/Slic3r) version 1.33.8.  Versions >= 1.34 don't yet work.
 3. Windows: Slic3r works for version 1.2.9, not doing it for version 1.1.7.
 
 ## Setup
