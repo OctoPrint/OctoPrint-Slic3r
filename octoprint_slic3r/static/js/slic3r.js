@@ -19,10 +19,10 @@ $(function() {
 
         self.uploadElement = $("#settings-slic3r-import");
         self.uploadButton = $("#settings-slic3r-import-start");
-        var data_ = null;
+        self.uploadData = null;
         self.uploadButton.on("click", function() {
-            if (data_) {
-                data_.submit();
+            if (self.uploadData) {
+                self.uploadData.submit();
             }
         });
 
@@ -70,7 +70,7 @@ $(function() {
             self.profileDisplayName(undefined);
             self.profileDescription(undefined);
             self.profileAllowOverwrite(true);
-            data_ = null;
+            self.uploadData = null;
         };
 
         self.uploadElement.fileupload({
@@ -104,7 +104,7 @@ $(function() {
                 }
 
                 data.formData = form;
-                data_ = data;
+                self.uploadData = data;
             },
             done: function(e, data) {
                 self.clearUpload();
