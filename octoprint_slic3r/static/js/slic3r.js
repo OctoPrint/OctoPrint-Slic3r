@@ -19,6 +19,12 @@ $(function() {
 
         self.uploadElement = $("#settings-slic3r-import");
         self.uploadButton = $("#settings-slic3r-import-start");
+        self.uploadData = null;
+        self.uploadButton.on("click", function() {
+            if (self.uploadData) {
+                self.uploadData.submit();
+            }
+        });
 
         self.profiles = new ItemListHelper(
             "plugin_slic3r_profiles",
@@ -55,10 +61,23 @@ $(function() {
             return name.replace(/[^a-zA-Z0-9\-_\.\(\) ]/g, "").replace(/ /g, "_");
         };
 
+        self.clearUpload = function() {
+            self.fileName(undefined);
+            self.placeholderName(undefined);
+            self.placeholderDisplayName(undefined);
+            self.placeholderDescription(undefined);
+            self.profileName(undefined);
+            self.profileDisplayName(undefined);
+            self.profileDescription(undefined);
+            self.profileAllowOverwrite(true);
+            self.uploadData = null;
+        };
+
         self.uploadElement.fileupload({
             dataType: "json",
             maxNumberOfFiles: 1,
             autoUpload: false,
+            headers: OctoPrint.getRequestHeaders(),
             add: function(e, data) {
                 if (data.files.length == 0) {
                     return false;
@@ -71,34 +90,24 @@ $(function() {
                 self.placeholderDisplayName(name);
                 self.placeholderDescription("Imported from " + self.fileName() + " on " + formatDate(new Date().getTime() / 1000));
 
-                self.uploadButton.on("click", function() {
-                    var form = {
-                        allowOverwrite: self.profileAllowOverwrite()
-                    };
+                var form = {
+                    allowOverwrite: self.profileAllowOverwrite()
+                };
+                if (self.profileName() !== undefined) {
+                    form["name"] = self.profileName();
+                }
+                if (self.profileDisplayName() !== undefined) {
+                    form["displayName"] = self.profileDisplayName();
+                }
+                if (self.profileDescription() !== undefined) {
+                    form["description"] = self.profileDescription();
+                }
 
-                    if (self.profileName() !== undefined) {
-                        form["name"] = self.profileName();
-                    }
-                    if (self.profileDisplayName() !== undefined) {
-                        form["displayName"] = self.profileDisplayName();
-                    }
-                    if (self.profileDescription() !== undefined) {
-                        form["description"] = self.profileDescription();
-                    }
-
-                    data.formData = form;
-                    data.submit();
-                });
+                data.formData = form;
+                self.uploadData = data;
             },
             done: function(e, data) {
-                self.fileName(undefined);
-                self.placeholderName(undefined);
-                self.placeholderDisplayName(undefined);
-                self.placeholderDescription(undefined);
-                self.profileName(undefined);
-                self.profileDisplayName(undefined);
-                self.profileDescription(undefined);
-                self.profileAllowOverwrite(true);
+                self.clearUpload();
 
                 $("#settings_plugin_slic3r_import").modal("hide");
                 self.requestData();
@@ -153,6 +162,7 @@ $(function() {
         };
 
         self.showImportProfileDialog = function() {
+            self.clearUpload();
             $("#settings_plugin_slic3r_import").modal("show");
         };
 
