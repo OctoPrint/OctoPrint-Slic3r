@@ -6,6 +6,13 @@ $(function() {
         self.settingsViewModel = parameters[1];
         self.slicingViewModel = parameters[2];
 
+        self.pathBroken = ko.observable();
+        self.pathOk = ko.observable(false);
+        self.pathText = ko.observable();
+        self.pathHelpVisible = ko.pureComputed(function() {
+            return self.pathBroken() || self.pathOk();
+        });
+
         self.fileName = ko.observable();
 
         self.placeholderName = ko.observable();
@@ -166,6 +173,25 @@ $(function() {
             $("#settings_plugin_slic3r_import").modal("show");
         };
 
+        self.testEnginePath = function() {
+            OctoPrint.util.testExecutable(self.settings.plugins.slic3r.slic3r_engine())
+                .done(function(response) {
+                    if (!response.result) {
+                        if (!response.exists) {
+                            self.pathText(gettext("The path doesn't exist"));
+                        } else if (!response.typeok) {
+                            self.pathText(gettext("The path is not a file"));
+                        } else if (!response.access) {
+                            self.pathText(gettext("The path is not an executable"));
+                        }
+                    } else {
+                        self.pathText(gettext("The path is valid"));
+                    }
+                    self.pathOk(response.result);
+                    self.pathBroken(!response.result);
+                });
+        };
+
         self.requestData = function() {
             $.ajax({
                 url: API_BASEURL + "slicing/slic3r/profiles",
@@ -192,6 +218,16 @@ $(function() {
         self.onBeforeBinding = function () {
             self.settings = self.settingsViewModel.settings;
             self.requestData();
+        };
+
+        self.onSettingsHidden = function() {
+            self.resetPathTest();
+        };
+
+        self.resetPathTest = function() {
+            self.pathBroken(false);
+            self.pathOk(false);
+            self.pathText("");
         };
 
     }
