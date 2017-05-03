@@ -12,6 +12,8 @@ import octoprint.util
 import octoprint.slicing
 import octoprint.settings
 
+from octoprint.util.paths import normalize as normalize_path
+
 from .profile import Profile
 
 blueprint = flask.Blueprint("plugin.slic3r", __name__)
@@ -170,8 +172,8 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 	##~~ SlicerPlugin API
 
 	def is_slicer_configured(self):
-		slic3r = self._settings.get(["slic3r_engine"])
-		return slic3r is not None and os.path.exists(slic3r)
+		slic3r_engine = normalize_path(self._settings.get(["slic3r_engine"]))
+		return slic3r_engine is not None and os.path.exists(slic3r_engine)
 
 	def get_slicer_properties(self):
 		return dict(
@@ -221,7 +223,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 		
 		self._slic3r_logger.info("### Slicing %s to %s using profile stored at %s" % (model_path, machinecode_path, profile_path))
 
-		executable = self._settings.get(["slic3r_engine"])
+		executable = normalize_path(self._settings.get(["slic3r_engine"]))
 		if not executable:
 			return False, "Path to Slic3r is not configured "
 

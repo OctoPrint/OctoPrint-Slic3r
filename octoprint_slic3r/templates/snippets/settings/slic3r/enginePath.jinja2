@@ -1,0 +1,10 @@
+<div class="control-group" data-bind="css: {error: pathBroken(), success: pathOk()}">
+    <label class="control-label" for="settings-slic3r-path">{{ _('Path to Slic3rEngine') }}</label>
+    <div class="controls">
+        <div class="input-append">
+            <input type="text" class="input-block-level" data-bind="value: settings.plugins.slic3r.slic3r_engine, valueUpdate: 'afterkeydown'">
+            <button class="btn" type="button" data-bind="click: testEnginePath, enable: settings.plugins.slic3r.slic3r_engine(), css: {disabled: !settings.plugins.slic3r.slic3r_engine()}">{{ _('Test') }}</button>
+        </div>
+        <span class="help-block" data-bind="visible: pathBroken() || pathOk(), text: pathText"></span>
+    </div>
+</div>

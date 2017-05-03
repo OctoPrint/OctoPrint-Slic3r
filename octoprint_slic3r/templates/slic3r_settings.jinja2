@@ -2,12 +2,7 @@
     <h4>{{ _('General') }}</h4>
 
     <form class="form-horizontal">
-        <div class="control-group">
-            <label class="control-label" for="settings-slic3r-path">{{ _('Path to Slic3r executable') }}</label>
-            <div class="controls">
-                <input type="text" class="input-block-level" data-bind="value: settings.plugins.slic3r.slic3r_engine">
-            </div>
-        </div>
+      {% include "snippets/settings/slic3r/enginePath.jinja2" %}
         <div class="control-group">
             <div class="controls">
                 <label class="checkbox">
