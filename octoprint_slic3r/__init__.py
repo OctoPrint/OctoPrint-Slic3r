@@ -8,6 +8,7 @@ import flask
 import re
 import json
 from collections import defaultdict
+from pkg_resources import parse_version
 
 import octoprint.plugin
 import octoprint.util
@@ -281,7 +282,11 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 		command = " ".join(args)
 		self._logger.info("Running %r in %s" % (command, working_dir))
 		try:
-			p = sarge.run(command, cwd=working_dir, async=True, stdout=sarge.Capture(), stderr=sarge.Capture())
+			if parse_version(sarge.__version__) >= parse_version('0.1.5'): # Because in version 0.1.5 the name was changed in sarge.
+				async_kwarg = 'async_'
+			else:
+				async_kwarg = 'async'
+			p = sarge.run(command, cwd=working_dir, stdout=sarge.Capture(), stderr=sarge.Capture(), **{async_kwarg: True})
 			p.wait_events()
 			try:
 				with self._slicing_commands_mutex:
