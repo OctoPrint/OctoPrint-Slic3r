@@ -318,11 +318,11 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 
 			self._slic3r_logger.info("### Finished, returncode %d" % p.returncode)
 			if p.returncode == 0:
-                                analysis = get_analysis_from_gcode(machinecode_path)
-                                self._slic3r_logger.info("Analysis found in gcode: %s" % str(analysis))
-                                if analysis:
-                                  analysis = {'analysis': analysis}
-                                return True, analysis
+				analysis = get_analysis_from_gcode(machinecode_path)
+				self._slic3r_logger.info("Analysis found in gcode: %s" % str(analysis))
+				if analysis:
+				  analysis = {'analysis': analysis}
+				return True, analysis
 			else:
 				self._logger.warn("Could not slice via Slic3r, got return code %r" % p.returncode)
 				return False, "Got returncode %r" % p.returncode
