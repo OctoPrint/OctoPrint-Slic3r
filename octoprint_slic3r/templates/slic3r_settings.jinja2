@@ -6,6 +6,9 @@
         <div class="control-group">
             <div class="controls">
                 <label class="checkbox">
+                    <input type="checkbox" data-bind="checked: settings.plugins.slic3r.is_prusaslicer"> {{ _('Check this if using PrusaSlicer') }}
+                </label>
+                <label class="checkbox">
                     <input type="checkbox" data-bind="checked: settings.plugins.slic3r.debug_logging"> {{ _('Log the output of Slic3r to plugin_slic3r_engine.log') }}
                 </label>
             </div>

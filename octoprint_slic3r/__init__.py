@@ -277,7 +277,11 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 		import sarge
 
 		working_dir, _ = os.path.split(executable)
-		args = ['"%s"' % executable, '--load', '"%s"' % profile_path, '--print-center', '"%f,%f"' % (posX, posY), '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
+		
+		if self._settings.get_boolean(["is_prusaslicer"]):
+			args = ['"%s"' % executable, '-s --load', '"%s"' % profile_path, '--center', '"%f,%f"' % (posX, posY), '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
+		else:
+			args = ['"%s"' % executable, '--load', '"%s"' % profile_path, '--print-center', '"%f,%f"' % (posX, posY), '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
 
 		command = " ".join(args)
 		self._logger.info("Running %r in %s" % (command, working_dir))
