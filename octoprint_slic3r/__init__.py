@@ -274,10 +274,23 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 		if not executable:
 			return False, "Path to Slic3r is not configured "
 
+		args = ['"%s"' % executable, '--load', '"%s"' % profile_path, '--print-center', '"%f,%f"' % (posX, posY), '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
+
+		try:
+			import subprocess
+
+			help_process = subprocess.Popen((executable, '--help'), stdout=subprocess.PIPE)
+			help_text = help_process.communicate()[0]
+
+			if help_text.startswith('PrusaSlicer-2'):
+				args = ['"%s"' % executable, '--slice --load', '"%s"' % profile_path, '--center', '"%f,%f"' % (posX, posY), '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
+				self._logger.info("Running Prusa Slic3r >= 2")
+		except:
+			self._logger.info("Error during Prusa Slic3r detection")
+
 		import sarge
 
 		working_dir, _ = os.path.split(executable)
-		args = ['"%s"' % executable, '--load', '"%s"' % profile_path, '--print-center', '"%f,%f"' % (posX, posY), '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
 
 		command = " ".join(args)
 		self._logger.info("Running %r in %s" % (command, working_dir))
