@@ -301,7 +301,8 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 				async_kwarg = 'async'
 			p = sarge.run(command, cwd=working_dir, stdout=sarge.Capture(), stderr=sarge.Capture(), **{async_kwarg: True})
 			p.wait_events()
-			try:
+                        last_error=""
+                        try:
 				with self._slicing_commands_mutex:
 					self._slicing_commands[machinecode_path] = p.commands[0]
 
@@ -321,6 +322,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 						self._slic3r_logger.debug("stdout: " + stdout_line.strip())
 					if stderr_line:
 						self._slic3r_logger.debug("stderr: " + stderr_line.strip())
+                                                if ( len(stderr_line.strip()) > 0 ): last_error = stderr_line.strip()
 			finally:
 				p.close()
 
@@ -338,7 +340,8 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 				return True, analysis
 			else:
 				self._logger.warn("Could not slice via Slic3r, got return code %r" % p.returncode)
-				return False, "Got returncode %r" % p.returncode
+				self._logger.warn("Error was: %s" % last_error)
+				return False, "Got returncode %r: %s" % (p.returncode, last_error)
 
 		except octoprint.slicing.SlicingCancelled as e:
 			raise e
