@@ -301,8 +301,8 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 				async_kwarg = 'async'
 			p = sarge.run(command, cwd=working_dir, stdout=sarge.Capture(), stderr=sarge.Capture(), **{async_kwarg: True})
 			p.wait_events()
-                        last_error=""
-                        try:
+			last_error=""
+			try:
 				with self._slicing_commands_mutex:
 					self._slicing_commands[machinecode_path] = p.commands[0]
 
