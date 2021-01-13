@@ -73,8 +73,6 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
                    octoprint.plugin.StartupPlugin):
 
   def __init__(self):
-    self._slic3r_logger = logging.getLogger("octoprint.plugins.slic3r.engine")
-
     # setup job tracking across threads
     import threading
     self._slicing_commands = dict()
@@ -107,6 +105,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
   ##~~ StartupPlugin API
 
   def on_startup(self, host, port):
+    self._slic3r_logger = self._logger
     # setup our custom logger
     slic3r_logging_handler = logging.handlers.RotatingFileHandler(self._settings.get_plugin_logfile_path(postfix="engine"), maxBytes=2*1024*1024)
     slic3r_logging_handler.setFormatter(logging.Formatter("%(asctime)s %(message)s"))
