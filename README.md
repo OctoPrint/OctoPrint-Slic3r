@@ -5,10 +5,24 @@
 This plugin has been successfully tested for the following cases:
 
 1. Linux: Slic3r's stable versions 1.1.7 and 1.2.9 (tests done under a Raspberry Pi 2, but it should work for other Linux distributions).
-2. Linux: Also tested with [Slic3r Prusa Edition](https://github.com/prusa3d/Slic3r) version 1.33.8.  Versions >= 1.34 might work with TBB using [these instructions](https://github.com/OctoPrint/OctoPrint-Slic3r/wiki/How-to-install-Slic3r-on-RPi).
+2. Linux: Also tested with [Slic3r Prusa Edition](https://github.com/prusa3d/Slic3r) version 1.33.8 and 2.3.  You might need TBB using [these instructions](https://github.com/OctoPrint/OctoPrint-Slic3r/wiki/How-to-install-Slic3r-on-RPi).
 3. Windows: Slic3r works for version 1.2.9, not doing it for version 1.1.7.
 
-Install using these instructions: https://github.com/OctoPrint/OctoPrint-Slic3r/wiki/How-to-install-Slic3r-on-RPi
+## Installing PrusaSlicer
+
+Download either the [ARM version if you have a Raspberry Pi](https://github.com/davidk/PrusaSlicer-ARM.AppImage/releases) or get a version from the [PrusaSlicer download page](https://www.prusa3d.com/prusaslicer/).
+
+Put that in a directory on the same device (Raspberry Pi or computer) that has OctoPrint.  Then type:
+
+```bash
+chmod +x <the name of the AppImage>
+```
+
+To test that it works, run:
+
+```bash
+<the name of the AppImage file> --version
+```
 
 ## Setup
 
