@@ -282,11 +282,14 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
       help_process = subprocess.Popen((executable, '--help'), stdout=subprocess.PIPE)
       help_text = help_process.communicate()[0]
 
-      if help_text.startswith('PrusaSlicer-2'):
+      if help_text.startswith(b'PrusaSlicer-2.3'):
+        args = ['"%s"' % executable, '-g --load', '"%s"' % profile_path, '--center', '"%f,%f"' % (posX, posY), '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
+        self._logger.info("Running Prusa Slic3r >= 2.3")
+      elif help_text.startswith(b'PrusaSlicer-2'):
         args = ['"%s"' % executable, '--slice --load', '"%s"' % profile_path, '--center', '"%f,%f"' % (posX, posY), '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
         self._logger.info("Running Prusa Slic3r >= 2")
-    except:
-      self._logger.info("Error during Prusa Slic3r detection")
+    except e:
+      self._logger.info("Error during Prusa Slic3r detection:" + str(e))
 
     import sarge
 
@@ -319,9 +322,9 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 
           line_seen = True
           if stdout_line:
-            self._slic3r_logger.debug("stdout: " + stdout_line.strip())
+            self._slic3r_logger.debug("stdout: " + str(stdout_line.strip()))
           if stderr_line:
-            self._slic3r_logger.debug("stderr: " + stderr_line.strip())
+            self._slic3r_logger.debug("stderr: " + str(stderr_line.strip()))
           if ( len(stderr_line.strip()) > 0 ):
             last_error = stderr_line.strip()
       finally:
