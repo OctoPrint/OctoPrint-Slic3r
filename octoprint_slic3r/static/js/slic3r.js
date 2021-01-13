@@ -6,6 +6,8 @@ $(function() {
         self.settingsViewModel = parameters[1];
         self.slicingViewModel = parameters[2];
 
+        self.isDefaultSlicer = ko.observable();
+
         self.pathBroken = ko.observable();
         self.pathOk = ko.observable(false);
         self.pathText = ko.observable();
@@ -173,6 +175,13 @@ $(function() {
             $("#settings_plugin_slic3r_import").modal("show");
         };
 
+        self.setAsDefaultSlicer = function() {
+            if (self.settings.slicing.defaultSlicer() != "slic3r") {
+                self.settings.slicing.defaultSlicer("slic3r");
+                self.isDefaultSlicer("after_save");
+            }
+        };
+
         self.testEnginePath = function() {
             OctoPrint.util.testExecutable(self.settings.plugins.slic3r.slic3r_engine())
                 .done(function(response) {
@@ -219,6 +228,10 @@ $(function() {
             self.settings = self.settingsViewModel.settings;
             self.requestData();
         };
+
+        self.onSettingsShown = function() {
+            self.isDefaultSlicer(self.settings.slicing.defaultSlicer() == "slic3r" ? "yes" : "no");
+        }
 
         self.onSettingsHidden = function() {
             self.resetPathTest();

@@ -8,6 +8,13 @@
                 <label class="checkbox">
                     <input type="checkbox" data-bind="checked: settings.plugins.slic3r.debug_logging"> {{ _('Log the output of Slic3r to plugin_slic3r_engine.log') }}
                 </label>
+                <button class="btn" type="button" data-bind="click: setAsDefaultSlicer">{{ _('Set as default slicer') }}</button>
+                <span class="help-inline" data-bind="text: function() {
+                    switch (isDefaultSlicer()) {
+                        case 'yes': return '{{ _('slic3r is currently the default slicer') }}';
+                        case 'no': return '{{ _('slic3r is not the default slicer') }}';
+                        case 'after_save': return '{{ _('slic3r will be the default slicer after saving') }}';
+                    }}()"></span>
             </div>
         </div>
     </form>
