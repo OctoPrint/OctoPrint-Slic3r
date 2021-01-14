@@ -274,7 +274,8 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
       return False, "Path to Slic3r is not configured "
 
     args = ['"%s"' % executable, '--load', '"%s"' % profile_path, '--print-center', '"%f,%f"' % (posX, posY), '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
-
+    env = {}
+    
     try:
       import subprocess
 
@@ -283,6 +284,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 
       if help_text.startswith(b'PrusaSlicer-2.3'):
         args = ['"%s"' % executable, '-g --load', '"%s"' % profile_path, '--center', '"%f,%f"' % (posX, posY), '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
+        env['SLIC3R_LOGLEVEL'] = "9"
         self._logger.info("Running Prusa Slic3r >= 2.3")
       elif help_text.startswith(b'PrusaSlicer-2'):
         args = ['"%s"' % executable, '--slice --load', '"%s"' % profile_path, '--center', '"%f,%f"' % (posX, posY), '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
@@ -301,7 +303,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
         async_kwarg = 'async_'
       else:
         async_kwarg = 'async'
-      p = sarge.run(command, cwd=working_dir, stdout=sarge.Capture(), stderr=sarge.Capture(), **{async_kwarg: True})
+      p = sarge.run(command, cwd=working_dir, stdout=sarge.Capture(buffer_size=1), stderr=sarge.Capture(buffer_size=1), env=env, **{async_kwarg: True})
       p.wait_events()
       last_error=""
       try:
@@ -310,8 +312,8 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 
         line_seen = False
         while p.returncode is None:
-          stdout_line = p.stdout.readline(timeout=0.5)
-          stderr_line = p.stderr.readline(timeout=0.5)
+          stdout_line = p.stdout.readline(timeout=0.5, block=False)
+          stderr_line = p.stderr.readline(timeout=0.5, block=False)
 
           if not stdout_line and not stderr_line:
             if line_seen:
