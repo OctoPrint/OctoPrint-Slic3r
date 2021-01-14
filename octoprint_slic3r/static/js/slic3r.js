@@ -230,7 +230,11 @@ $(function() {
         };
 
         self.onSettingsShown = function() {
-            self.isDefaultSlicer(self.settings.slicing.defaultSlicer() == "slic3r" ? "yes" : "no");
+            if ('slicing' in self.settings && 'defaultSlicer' in self.settings.slicing) {
+                self.isDefaultSlicer(self.settings.slicing.defaultSlicer() == "slic3r" ? "yes" : "no");
+            } else {
+                self.isDefaultSlicer("unknown");
+            }
         }
 
         self.onSettingsHidden = function() {
