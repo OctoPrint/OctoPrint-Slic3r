@@ -251,6 +251,14 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
     self._save_profile(path, new_profile, allow_overwrite=allow_overwrite, display_name=profile.display_name, description=profile.description)
 
   def do_slice(self, model_path, printer_profile, machinecode_path=None, profile_path=None, position=None, on_progress=None, on_progress_args=None, on_progress_kwargs=None):
+    if on_progress is not None:
+      if on_progress_args is None:
+        on_progress_args = ()
+      if on_progress_kwargs is None:
+        on_progress_kwargs = dict()
+      on_progress_kwargs["_progress"] = 0
+      on_progress(*on_progress_args, **on_progress_kwargs)
+
     if not profile_path:
       profile_path = self._settings.get(["default_profile"])
     if not machinecode_path:
@@ -310,25 +318,53 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
         with self._slicing_commands_mutex:
           self._slicing_commands[machinecode_path] = p.commands[0]
 
-        line_seen = False
+        stdout_buffer = b""
+        stderr_buffer = b""
+        total_layers = 1
+
+        matched_lines = 0
         while p.returncode is None:
-          stdout_line = p.stdout.readline(timeout=0.5, block=False)
-          stderr_line = p.stderr.readline(timeout=0.5, block=False)
+          p.commands[0].poll()
 
-          if not stdout_line and not stderr_line:
-            if line_seen:
-              break
-            else:
-              continue
+          # Can't use readline because it removes newlines and we can't tell if we have gotten a full line.
+          stdout_buffer += p.stdout.read(block=False)
+          stderr_buffer += p.stderr.read(block=False)
 
-          line_seen = True
-          if stdout_line:
-            self._slic3r_logger.debug("stdout: " + str(stdout_line.strip()))
-          if stderr_line:
-            self._slic3r_logger.debug("stderr: " + str(stderr_line.strip()))
-          if ( len(stderr_line.strip()) > 0 ):
-            last_error = stderr_line.strip()
+          stdout_lines = stdout_buffer.split(b'\n')
+          stdout_buffer = stdout_lines[-1]
+          stdout_lines = stdout_lines[0:-1]
+          for stdout_line in stdout_lines:
+            self._slic3r_logger.debug("stdout: " + str(stdout_line))
+            print(stdout_line.decode('utf-8'))
+            m = re.search(r"\[trace\].*layer ([0-9]+)", stdout_line.decode('utf-8'))
+            if m:
+              matched_lines += 1
+              current_layer = int(m.group(1))
+              total_layers = max(total_layers, current_layer)
+              if on_progress is not None:
+                print("sending progress" + str(matched_lines / total_layers / 4))
+                on_progress_kwargs["_progress"] = matched_lines / total_layers / 4
+                on_progress(*on_progress_args, **on_progress_kwargs)
+
+          stderr_lines = stderr_buffer.split(b'\n')
+          stderr_buffer = stderr_lines[-1]
+          stderr_lines = stderr_lines[0:-1]
+          for stderr_line in stderr_lines:
+            self._slic3r_logger.debug("stderr: " + str(stderr_line))
+            if len(stderr_line.strip()) > 0:
+              last_error = stderr_line.strip()
       finally:
+        if stdout_buffer:
+          stdout_lines = stdout_buffer.split(b'\n')
+          for stdout_line in stdout_lines:
+            self._slic3r_logger.debug("stdout: " + str(stdout_line))
+
+        if stderr_buffer:
+          stderr_lines = stderr_buffer.split(b'\n')
+          for stderr_line in stderr_lines:
+            self._slic3r_logger.debug("stderr: " + str(stderr_line))
+            if len(stderr_line.strip()) > 0:
+              last_error = stderr_line.strip()
         p.close()
 
       with self._cancelled_jobs_mutex:
