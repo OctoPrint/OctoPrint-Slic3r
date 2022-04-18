@@ -290,7 +290,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
       help_process = subprocess.Popen((executable, '--help'), stdout=subprocess.PIPE)
       help_text = help_process.communicate()[0]
 
-      if help_text.startswith(b'PrusaSlicer-2.3'):
+      if help_text.startswith(b'PrusaSlicer-2.3') or help_text.startswith(b'PrusaSlicer-2.4'):
         args = ['"%s"' % executable, '-g --load', '"%s"' % profile_path, '--center', '"%f,%f"' % (posX, posY), '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
         env['SLIC3R_LOGLEVEL'] = "9"
         self._logger.info("Running Prusa Slic3r >= 2.3")
