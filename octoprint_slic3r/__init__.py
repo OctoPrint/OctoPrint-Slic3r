@@ -288,7 +288,14 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
       import subprocess
 
       help_process = subprocess.Popen((executable, '--help'), stdout=subprocess.PIPE)
-      help_text = help_process.communicate()[0]
+      help_text_all = help_process.communicate()
+
+      if help_text_all[0].find(b'trace') >= 0
+        help_text = help_text_all[1]
+      else:
+        help_text = help_text_all[0]
+
+      self._logger.debug(help_text)
 
       if help_text.startswith(b'PrusaSlicer-2.3') or help_text.startswith(b'PrusaSlicer-2.4'):
         args = ['"%s"' % executable, '-g --load', '"%s"' % profile_path, '--center', '"%f,%f"' % (posX, posY), '-o', '"%s"' % machinecode_path, '"%s"' % model_path]
