@@ -289,7 +289,10 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
 
       help_process = subprocess.Popen((executable, '--help'), stdout=subprocess.PIPE)
       help_text_all = help_process.communicate()
-
+      
+      # help output includes a trace statement now on the first line. If we find it, use the second
+      # line instead
+      # [2022-04-22 21:44:51.396082] [0x75527010] [trace]   Initializing StaticPrintConfigs
       if help_text_all[0].find(b'trace') >= 0
         help_text = help_text_all[1]
       else:
