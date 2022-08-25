@@ -19,7 +19,6 @@ from octoprint.util.paths import normalize as normalize_path
 
 from .profile import Profile
 
-blueprint = flask.Blueprint("plugin.slic3r", __name__)
 
 def get_analysis_from_gcode(machinecode_path):
   """Extracts the analysis data structure from the gocde.
@@ -293,7 +292,7 @@ class Slic3rPlugin(octoprint.plugin.SlicerPlugin,
       # help output includes a trace statement now on the first line. If we find it, use the second
       # line instead
       # [2022-04-22 21:44:51.396082] [0x75527010] [trace]   Initializing StaticPrintConfigs
-      if help_text_all[0].find(b'trace') >= 0
+      if help_text_all[0].find(b'trace') >= 0:
         help_text = help_text_all[1]
       else:
         help_text = help_text_all[0]
